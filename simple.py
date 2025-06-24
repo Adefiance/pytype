@@ -4,10 +4,10 @@ Simple typing file.
 Holder for types like PolyValue and Coordinate, aswell as a few types that aren't necessarily pygame-related.
 """
 
-import typing
+from typing import Literal
 
 # Not related to pygame.
-type anyBool = bool | typing.Literal[0, 1]
+type anyBool = bool | Literal[0, 1]
 """Allows for more leniency"""
 
 #  More likely to show up
