@@ -27,14 +27,13 @@ class DrawWrapper:
     def lines(self, color: ColorValue, closed: anyBool, points: PolyValue, width: int = 1): return pygame.draw.lines(self.surface, color, bool(closed), points, width)
     def aaline(self, color, start: Coordinate, end: Coordinate, blend: int = 1): return pygame.draw.aaline(self.surface, color, start, end, blend)
     def aalines(self, color, closed: anyBool, points: PolyValue, blend: int = 1): return pygame.draw.aalines(self.surface, color, bool(closed), points, blend)
-
 class Surface:
     """
     A Pytype Surface. Adds a few actions straight to the surface itself, including the main transformations and draw.
     
     Example:
     ```python
-    mySurf: pytype.Surface = pytype.Surface((50, 50))s
+    mySurf: pytype.Surface = pytype.Surface((50, 50))
     mySurf.scaleBy(2) 
     ```
     This will return a Surface with both width and height multiplied by 2.
@@ -68,8 +67,7 @@ class Surface:
     def setAlpha(self, value: int, flags: int = 0) -> None: return self._surf.set_alpha(value, flags)
     def getSurface(self) -> pygame.surface.Surface: return self._surf
     def blit(self, source: pygame.surface.Surface, dest: Coordinate | RectValue, area: RectValue | None = None, flags: int = 0) -> pygame.Rect: return self._surf.blit(source, dest, area, flags)
-    def blits(self, sequence: typing.Sequence[ typing.Union[ typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], typing.Union[RectValue, int]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], RectValue, int] ] ], doreturn: anyBool = 1) -> list[pygame.Rect] | None: return self._surf.blits(sequence, doreturn)
-    
+    def blits(self, sequence: typing.Sequence[ typing.Union[ typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], typing.Union[RectValue, int]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], RectValue, int] ] ], doreturn: anyBool = 1) -> list[pygame.Rect] | None: return self._surf.blits(sequence, doreturn)   
 class Rect (pygame.Rect):
     """
     This is (mostly) a normal Pygame Rect. 
@@ -115,7 +113,6 @@ class Rect (pygame.Rect):
         else: surface = pygame.Surface(self.size, flags, 32)
         pygame.draw.rect(surface, color, pygame.Rect((0, 0), self.size), width)
         return surface
-
 class Display:
     """Display is mostly similiar to Surface. This will instead create a **window**, however."""
     def __init__(self, size: Coordinate = (0, 0), flags: int = 0, depth: int = 0, display: int = 0, vsync: int = 0):

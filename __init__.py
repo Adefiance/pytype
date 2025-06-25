@@ -22,13 +22,13 @@ myDisplay.resize((500, 500), (True, True))
 It can also scale the contents from the x and y axis!
 
 Genuinelly hope you like using this, Have fun!
+
+(You should probably call this as a wildcard import)
 """
 
 from pytype.classes import *
 from pytype.simple import *
 
-pygame = None
-"""Try NOT accessing pygame from here! This WILL cause an error!"""
 Literal = None
 """Not this either!!"""
 typing = None
