@@ -28,10 +28,3 @@ Genuinelly hope you like using this, Have fun!
 
 from pytype.classes import *
 from pytype.simple import *
-
-Literal = None
-"""Not this either!!"""
-typing = None
-"""NO."""
-
-del pygame, Literal, typing
