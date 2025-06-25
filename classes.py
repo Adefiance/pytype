@@ -1,8 +1,21 @@
-from simple import *
+"""
+Classes used in pytype.
+"""
+
+from pytype.simple import *
 import typing
 import pygame
 
 class DrawWrapper:
+    """
+    The draw wrapper. This is what enables Surface and Display to be drawn on from the variable itself.
+
+    Example:
+        ```python
+        mySurf: pytype.Surface = pytype.Surface((50, 50))s
+        mySurf.draw.rect((255, 0, 0), (0, 0, 50, 50))
+        ```
+    """
     def __init__(self, surface: pygame.surface.Surface): self.surface = surface
     def rect(self, color: ColorValue, rect: RectValue, width: int = 0): pygame.draw.rect(self.surface, color, rect, width)
     def polygon(self, color: ColorValue, points: PolyValue, width: int = 0): pygame.draw.polygon(self.surface, color, points, width)
@@ -30,24 +43,35 @@ class Surface:
     def getSurface(self) -> pygame.surface.Surface: return self._surf
     def blit(self, source: pygame.surface.Surface, dest: Coordinate | RectValue, area: RectValue | None = None, flags: int = 0) -> pygame.Rect: return self._surf.blit(source, dest, area, flags)
     def blits(self, sequence: typing.Sequence[ typing.Union[ typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], typing.Union[RectValue, int]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], RectValue, int] ] ], doreturn: anyBool = 1) -> list[pygame.Rect] | None: return self._surf.blits(sequence, doreturn)
-    def copy(self): return self
-
-    __copy__ = copy
     
 class Rect (pygame.Rect):
     def onSurface(self: pygame.Rect, color: ColorValue, flags: int = 0, depth: int = 32, masks: ColorValue | None = None) -> Surface:
         surface: Surface = Surface(self.size, flags, depth, masks)
         pygame.draw.rect(surface.getSurface(), color, pygame.Rect((0, 0), self.size))
         return surface
+    def onTrueSurface(self: pygame.Rect, color: ColorValue, flags: int = 0, depth: int = 0, masks: AlphaValue | None = None) -> pygame.Surface:
+        if masks is not None: surface = pygame.Surface(self.size, flags, depth, masks)
+        else: surface = pygame.Surface(self.size, flags, 32)
+        pygame.draw.rect(surface, color, pygame.Rect((0, 0), self.size))
+        return surface
 
 class Display:
     def __init__(self, size: Coordinate = (0, 0), flags: int = 0, depth: int = 0, display: int = 0, vsync: int = 0):
         self._display = pygame.display.set_mode(size, flags, depth, display, vsync)
         self.draw = DrawWrapper(self._display)
+        self._index = display
+        self._vsync = vsync
     def getDisplay(self) -> pygame.surface.Surface: return self._display
     def quit(self) -> None: return pygame.display.quit()
     def blit(self, source: pygame.surface.Surface, dest: Coordinate | RectValue, area: RectValue | None = None, flags: int = 0) -> pygame.Rect: return self._display.blit(source, dest, area, flags)
     def blits(self, sequence: typing.Sequence[ typing.Union[ typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], typing.Union[RectValue, int]], typing.Tuple[pygame.surface.Surface, typing.Union[Coordinate, RectValue], RectValue, int] ] ], doreturn: anyBool = 1) -> list[pygame.Rect] | None: return self._display.blits(sequence, doreturn)
-    def copy(self): return self
+    def resize(self, size: Coordinate, scaled: tuple[anyBool, anyBool] = (False, False)) -> None:
+        old = self._display.copy()
+        new = pygame.display.set_mode(size, self.getDisplay().get_flags(), self.getDisplay().get_bitsize(), self._index, self._vsync)
 
-    __copy__ = copy
+        self._display = new
+        self.draw = DrawWrapper(new)
+
+        old = pygame.transform.smoothscale(old, (new.get_size()[0] if scaled[0] else old.get_size()[0], new.get_size()[1] if scaled[1] else old.get_size()[1]))
+        self.blit(old, (0, 0))
+    def flip(self) -> None: pygame.display.flip()
