@@ -7,10 +7,10 @@ type AnyBool = bool | Literal[0, 1]
 
 #  Likely to show up
 type ColorValue = tuple[int, int, int] | tuple[int, int, int, int]
-"""This type accepts RGB/A values only."""
+"""Accepts RGB/A values only."""
 
 type AlphaValue = tuple[int, int, int, int]
-"""This type accepts SPECIFICALLY RGBA values only."""
+"""Accepts RGBA values only."""
 
 type Coordinate = tuple[int, int] 
 """Used for 2 dimensional sizing and positions"""
